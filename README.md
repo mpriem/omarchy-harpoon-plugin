@@ -11,6 +11,8 @@ working in. While a tiled window is away, a Harpoon logo holds its place;
 click the placeholder to bring the window back. The reservation also keeps
 an otherwise empty workspace alive.
 
+<video src="https://github.com/mpriem/omarchy-harpoon-plugin/raw/HEAD/assets/harpoon-demo.mp4" controls width="100%"></video>
+
 ## Requirements
 
 - Omarchy 4.x (Quickshell shell, Lua Hyprland config)
