@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "harpoon",
+  "name": "Harpoon",
+  "version": "1.0.0",
+  "author": "markpriem",
+  "license": "MIT",
+  "description": "Bookmark up to 10 Hyprland windows and harpoon them onto your current workspace — a tribute to the Neovim Harpoon plugin.",
+  "kinds": [
+    "overlay",
+    "bar-widget"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Harpoon.qml",
+    "barWidget": "HarpoonBar.qml"
+  },
+  "barWidget": {
+    "displayName": "Harpoon"
+  }
+}

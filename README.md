@@ -1,0 +1,92 @@
+# Harpoon
+
+Bookmark up to 10 Hyprland windows and jump to them from anywhere — an
+[Omarchy](https://omarchy.org) plugin in the spirit of
+[Harpoon](https://github.com/ThePrimeagen/harpoon) for Neovim.
+
+A jump floats, centers and pins the window on top of your **current**
+workspace. Jump to the same slot again, or press `SUPER+W` on it, and it goes
+back into its reserved tile, with focus returning to the window you were
+working in. While a tiled window is away, a Harpoon logo holds its place;
+click the placeholder to bring the window back. The reservation also keeps
+an otherwise empty workspace alive.
+
+## Requirements
+
+- Omarchy 4.x (Quickshell shell, Lua Hyprland config)
+- `grim` — optional, for the preview fallback
+
+## Install
+
+Replace `<repository-url>` with this repository’s GitHub URL:
+
+```bash
+omarchy plugin add <repository-url>
+omarchy plugin enable harpoon
+```
+
+Alternatively, run `./install.sh` from a local checkout to install and enable
+the plugin.
+
+After either installation method, add this line to
+`~/.config/hypr/bindings.lua`:
+
+```lua
+dofile(os.getenv("HOME") .. "/.config/omarchy/plugins/harpoon/hypr/harpoon-bindings.lua")
+```
+
+Reload Hyprland to activate the shortcuts:
+
+```bash
+hyprctl reload
+```
+
+To add a bar button showing the bookmark count and opening the list:
+
+```bash
+omarchy plugin enable harpoon right
+```
+
+## Keys
+
+`SUPER+H` opens a one-shot group; the next key acts and the group closes.
+
+| Key | Action |
+|---|---|
+| `A` | Bookmark the focused window in the first empty slot |
+| `1`–`9`, `0` | Jump to slot 1–10; jumping to a slot already on screen restores it |
+| `Shift`+digit | Bookmark the focused window **at** that slot |
+| `Space` | Focus the on-screen bookmark (cycling if several); otherwise open the list |
+| `Escape` | Cancel |
+
+`SUPER+W` restores an on-screen bookmark instead of closing it; any other
+window closes as usual.
+
+### The list (`SUPER+H`, `Space`)
+
+| Key | Action |
+|---|---|
+| `↑`/`↓`, `j`/`k` | Move |
+| `Shift+↑`/`↓` | Swap with the neighbouring bookmark |
+| `Shift`+digit | Move the selection to that slot (swapping if taken) |
+| `r` | Rename |
+| `d` / `Shift+D` | Delete / clear all — restores borrowed windows first; never closes them |
+| `p` | Preview: Live → Thumbnail → Off (remembered) |
+| `Enter`/`Space`, click | Jump |
+| `q`/`Escape` | Close |
+
+Windows behind the list stay interactive, so you can pick another window
+and bookmark it without closing the list — which is why there's no
+click-outside-to-close.
+
+Closing a bookmarked window automatically removes it from the list and frees
+its slot. The remaining bookmarks keep their slot numbers. Stale bookmarks
+from previous sessions are also removed when the plugin loads.
+
+Preview modes are Live, Thumbnail, and Off. Thumbnail captures a still image
+when the list opens; your chosen mode is remembered.
+
+## License
+
+[MIT](LICENSE). Includes [dkjson](http://dkolf.de/src/dkjson-lua.fsl/) by
+David Kolf, also licensed under MIT.
