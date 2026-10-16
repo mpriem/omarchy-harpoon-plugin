@@ -93,7 +93,7 @@ Item {
     }
   }
 
-  // One top-level rename field rather than a TextInput per row: a
+  // One top-level rename field rather than an editor per row: a
   // per-delegate `focus: row.isRenaming` binding didn't reliably win
   // activeFocus from the key catcher across the ListView boundary.
   Row {
@@ -131,23 +131,56 @@ Item {
         borderSpec: Border.controlSpec("normal", root.foreground, root.selectedText)
         radius: root.softRadius
 
-        TextInput {
-          id: renameField
+        Flickable {
+          id: renameViewport
           anchors.fill: parent
           anchors.leftMargin: Style.space(10)
           anchors.rightMargin: Style.space(10)
-          verticalAlignment: TextInput.AlignVCenter
-          text: root.renameText
-          color: root.foreground
-          selectionColor: Util.alpha(root.selectedText, 0.35)
-          selectedTextColor: root.foreground
-          font.family: root.fontFamily
-          font.pixelSize: Style.font.body
-          selectByMouse: true
+          contentWidth: Math.max(width, renameField.contentWidth)
+          contentHeight: height
+          interactive: false
           clip: true
-          onTextChanged: root.renameEdited(text)
-          onAccepted: root.renameAccepted()
-          Keys.onEscapePressed: root.renameCancelled()
+
+          TextEdit {
+            id: renameField
+            width: renameViewport.width
+            height: renameViewport.height
+            verticalAlignment: TextEdit.AlignVCenter
+            textFormat: TextEdit.PlainText
+            wrapMode: TextEdit.NoWrap
+            text: root.renameText
+            color: root.foreground
+            selectionColor: Util.alpha(root.selectedText, 0.35)
+            selectedTextColor: root.foreground
+            font.family: root.fontFamily
+            font.pixelSize: Style.font.body
+            selectByMouse: true
+            onTextChanged: root.renameEdited(text)
+            onCursorRectangleChanged: {
+              if (cursorRectangle.x < renameViewport.contentX)
+                renameViewport.contentX = cursorRectangle.x
+              else if (cursorRectangle.x + cursorRectangle.width > renameViewport.contentX + renameViewport.width)
+                renameViewport.contentX = cursorRectangle.x + cursorRectangle.width - renameViewport.width
+            }
+
+            // TextEdit avoids TextInput's eager clipboard read. Block native
+            // paste too: Qt's Wayland clipboard reader is unbounded.
+            Keys.onPressed: function(event) {
+              if (event.matches(StandardKey.Paste)) {
+                event.accepted = true
+              } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                event.accepted = true
+                root.renameAccepted()
+              }
+            }
+            Keys.onEscapePressed: root.renameCancelled()
+
+            MouseArea {
+              anchors.fill: parent
+              acceptedButtons: Qt.MiddleButton
+              // Consume primary-selection paste without affecting left-click selection.
+            }
+          }
         }
       }
     }

@@ -115,6 +115,8 @@ window closes as usual.
 | `Enter`/`Space`, click | Jump |
 | `q`/`Escape` | Close |
 
+Pasting into the rename field is disabled to avoid Qt's unbounded clipboard reads.
+
 Windows behind the list stay interactive, so you can pick another window
 and bookmark it without closing the list — which is why there's no
 click-outside-to-close.
